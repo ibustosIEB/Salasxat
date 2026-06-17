@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activitats · Hotel Cambrils</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--blau:#1B4F72;--turquesa:#17A589;--turq-clar:#1ABC9C;--arena:#F0C070;--arena-suau:#FEF9EC;--blanc:#FAFAF8;--fosc:#1A2533;--gris:#6C7A89;--gris-clar:#ECF0F1;--vermell:#E74C3C;--t1:#E67E22;--t2:#8E44AD;--t3:#17A589}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',sans-serif;background:var(--blanc);color:var(--fosc);min-height:100vh}
+
+  /* LOADING */
+  #loading{position:fixed;inset:0;background:rgba(27,79,114,.93);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;color:#fff;transition:opacity .4s}
+  #loading.hidden{opacity:0;pointer-events:none}
+  .spinner{width:44px;height:44px;border:4px solid rgba(255,255,255,.25);border-top-color:var(--arena);border-radius:50%;animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  #loading p{font-size:.95rem;opacity:.85}
+
+  /* HEADER */
+  header{background:linear-gradient(135deg,var(--blau) 0%,#154360 60%,#0E2F44 100%);color:#fff;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.3)}
+  .header-inner{max-width:1200px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .logo{display:flex;align-items:center;gap:12px}
+  .logo-icon{width:44px;height:44px;background:var(--arena);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px}
+  .logo h1{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:700}
+  .logo p{font-size:.72rem;opacity:.7;letter-spacing:1.5px;text-transform:uppercase}
+  .hbtns{display:flex;gap:8px;align-items:center}
+
+  /* BOTONS */
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;border:none;font-family:'Inter',sans-serif;font-size:.85rem;font-weight:500;cursor:pointer;transition:all .2s}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .btn-primary{background:var(--turquesa);color:#fff}.btn-primary:hover:not(:disabled){background:var(--turq-clar);transform:translateY(-1px)}
+  .btn-outline{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.4)}.btn-outline:hover{background:rgba(255,255,255,.1)}
+  .btn-danger{background:var(--vermell);color:#fff}.btn-danger:hover{background:#c0392b}
+  .btn-ghost{background:var(--gris-clar);color:var(--fosc)}.btn-ghost:hover{background:#d5dbdb}
+  .btn-sm{padding:5px 10px;font-size:.75rem;border-radius:6px}
+
+  /* DIES */
+  .days-bar{background:#fff;border-bottom:1px solid #e0e0e0;position:sticky;top:73px;z-index:90}
+  .days-inner{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;overflow-x:auto}
+  .day-tab{padding:14px 24px;font-size:.88rem;font-weight:500;color:var(--gris);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:all .2s;background:none;border-top:none;border-left:none;border-right:none;font-family:'Inter',sans-serif;text-align:center;line-height:1.35}
+  .day-tab:hover{color:var(--blau)}
+  .day-tab.active{color:var(--blau);border-bottom-color:var(--turquesa);font-weight:600}
+  .tab-date{font-size:.7rem;display:block;opacity:.65;margin-bottom:1px}
+  .type-filters{margin-left:auto;display:flex;gap:6px;padding:8px 0;flex-shrink:0}
+  .pill{padding:4px 12px;border-radius:20px;font-size:.75rem;font-weight:600;cursor:pointer;border:2px solid transparent;transition:all .2s;background:none;font-family:'Inter',sans-serif}
+  .pill[data-t="1"]{color:var(--t1);border-color:var(--t1)}.pill.on[data-t="1"]{background:var(--t1);color:#fff}
+  .pill[data-t="2"]{color:var(--t2);border-color:var(--t2)}.pill.on[data-t="2"]{background:var(--t2);color:#fff}
+  .pill[data-t="3"]{color:var(--t3);border-color:var(--t3)}.pill.on[data-t="3"]{background:var(--t3);color:#fff}
+
+  /* MAIN */
+  main{max-width:1200px;margin:0 auto;padding:32px 24px 80px}
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:24px}
+  .sec-head h2{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--blau)}
+  .badge{background:var(--gris-clar);color:var(--gris);padding:2px 10px;border-radius:20px;font-size:.8rem;font-weight:600}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:24px}
+
+  /* TARGETES */
+  .card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.08);transition:transform .25s,box-shadow .25s;display:flex;flex-direction:column;cursor:pointer}
+  .card:hover{transform:translateY(-4px);box-shadow:0 8px 32px rgba(0,0,0,.14)}
+  .card-img{width:100%;height:180px;object-fit:cover;display:block}
+  .card-img-ph{width:100%;height:180px;background:linear-gradient(135deg,var(--gris-clar),#dfe6e9);display:flex;align-items:center;justify-content:center;font-size:48px;color:#bdc3c7}
+  .stripe{height:4px}
+  .card[data-t="1"] .stripe{background:var(--t1)}
+  .card[data-t="2"] .stripe{background:var(--t2)}
+  .card[data-t="3"] .stripe{background:var(--t3)}
+  .card-body{padding:20px;flex:1;display:flex;flex-direction:column;gap:10px}
+  .card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+  .card-title{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--fosc);line-height:1.3}
+  .tbadge{flex-shrink:0;padding:3px 10px;border-radius:20px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+  .tbadge[data-t="1"]{background:#FEF0E6;color:var(--t1)}
+  .tbadge[data-t="2"]{background:#F4ECF7;color:var(--t2)}
+  .tbadge[data-t="3"]{background:#E8F8F5;color:var(--t3)}
+  .card-desc{font-size:.85rem;color:var(--gris);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .card-meta{display:flex;flex-direction:column;gap:5px;margin-top:4px}
+  .meta-row{display:flex;align-items:center;gap:7px;font-size:.8rem;color:var(--gris)}
+  .meta-row .ico{width:18px;text-align:center}
+  .card-footer{padding:12px 20px;background:var(--gris-clar);display:flex;align-items:center;gap:8px}
+  .avatar{width:28px;height:28px;background:var(--blau);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;flex-shrink:0}
+  .equip-name{font-size:.78rem;color:var(--gris)}
+  .empty{grid-column:1/-1;text-align:center;padding:64px 24px;color:var(--gris)}
+  .empty .ico{font-size:48px;margin-bottom:16px}
+
+  /* MODAL */
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+  .overlay.open{display:flex}
+  .modal{background:#fff;border-radius:20px;width:100%;max-width:680px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25);animation:up .3s ease}
+  @keyframes up{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+  .modal-img{width:100%;height:240px;object-fit:cover;border-radius:20px 20px 0 0}
+  .modal-img-ph{width:100%;height:240px;border-radius:20px 20px 0 0;background:linear-gradient(135deg,var(--gris-clar),#dfe6e9);display:flex;align-items:center;justify-content:center;font-size:64px;color:#bdc3c7}
+  .modal-body{padding:28px}
+  .modal-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+  .modal-ttl{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--fosc);margin-top:6px}
+  .btn-x{background:var(--gris-clar);border:none;width:32px;height:32px;border-radius:50%;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--gris)}
+  .btn-x:hover{background:#d5dbdb}
+  .modal-desc{font-size:.9rem;color:var(--gris);line-height:1.6;margin-bottom:20px}
+  .mgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+  .mf{background:var(--arena-suau);border-radius:10px;padding:12px 14px}
+  .mf.full{grid-column:1/-1}
+  .fl{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--gris);margin-bottom:4px}
+  .fv{font-size:.88rem;color:var(--fosc);font-weight:500}
+  .obs-box{background:#FFF3CD;border-left:4px solid var(--arena);border-radius:0 10px 10px 0;padding:12px 16px;font-size:.85rem;color:#7B5900;line-height:1.5}
+  .obs-lbl{font-weight:700;font-size:.75rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;color:#9A7000}
+
+  /* ADMIN */
+  #admin{display:none;max-width:1200px;margin:0 auto;padding:32px 24px 80px}
+  #admin.open{display:block}
+  #pub.hidden{display:none}
+  .adm-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+  .adm-head h2{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--blau)}
+  .tbl-wrap{background:#fff;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,.08);overflow:auto;margin-bottom:28px}
+  table{width:100%;border-collapse:collapse;font-size:.83rem}
+  thead{background:var(--blau);color:#fff}
+  thead th{padding:13px 14px;text-align:left;font-weight:600;white-space:nowrap}
+  tbody tr{border-bottom:1px solid var(--gris-clar);transition:background .15s}
+  tbody tr:hover{background:var(--arena-suau)}
+  tbody td{padding:11px 14px;vertical-align:middle}
+  .td-nom{font-weight:600}
+  .td-act{display:flex;gap:6px;white-space:nowrap}
+  .fcard{background:#fff;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,.08);padding:28px;margin-bottom:28px}
+  .fcard h3{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--blau);margin-bottom:20px;padding-bottom:12px;border-bottom:2px solid var(--gris-clar)}
+  .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .fg{display:flex;flex-direction:column;gap:6px}
+  .fg.full{grid-column:1/-1}
+  label{font-size:.78rem;font-weight:600;color:var(--fosc);text-transform:uppercase;letter-spacing:.6px}
+  label .req{color:var(--vermell)}
+  input,select,textarea{padding:10px 14px;border:1.5px solid #D5D8DC;border-radius:8px;font-family:'Inter',sans-serif;font-size:.88rem;color:var(--fosc);transition:border-color .2s,box-shadow .2s;background:#fff;width:100%}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--turquesa);box-shadow:0 0 0 3px rgba(23,165,137,.15)}
+  textarea{resize:vertical;min-height:80px}
+  .fact{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;padding-top:18px;border-top:1px solid var(--gris-clar)}
+
+  /* TOAST */
+  #toast{position:fixed;bottom:28px;right:28px;background:var(--turquesa);color:#fff;padding:13px 22px;border-radius:10px;font-size:.88rem;font-weight:500;box-shadow:0 4px 20px rgba(0,0,0,.2);z-index:9998;opacity:0;transform:translateY(20px);transition:all .3s;pointer-events:none}
+  #toast.show{opacity:1;transform:translateY(0)}
+
+  
+  /* MODAL CONTRASENYA */
+  #pass-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;display:none;align-items:center;justify-content:center}
+  #pass-overlay.open{display:flex}
+  .pass-box{background:#fff;border-radius:16px;padding:32px;width:100%;max-width:360px;box-shadow:0 20px 60px rgba(0,0,0,.3);animation:up .25s ease;text-align:center}
+  .pass-box h2{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--blau);margin-bottom:8px}
+  .pass-box p{font-size:.85rem;color:var(--gris);margin-bottom:20px}
+  .pass-box input{margin-bottom:12px;text-align:center;letter-spacing:3px;font-size:1rem}
+  #pass-error{color:var(--vermell);font-size:.82rem;min-height:18px;margin-bottom:10px}
+  .pass-btns{display:flex;gap:10px;justify-content:center}
+
+  @media(max-width:600px){
+    .fgrid,.mgrid{grid-template-columns:1fr}
+    .fg.full,.mf.full{grid-column:1}
+    .type-filters{display:none}
+    .grid{grid-template-columns:1fr}
+    .day-tab{padding:12px 14px;font-size:.82rem}
+  }
+</style>
+</head>
+<body>
+
+<div id="loading"><div class="spinner"></div><p id="loading-txt">Connectant amb Google Sheets...</p></div>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">🌊</div>
+      <div><h1>Hotel Cambrils</h1><p>Programa d'Activitats</p></div>
+    </div>
+    <div class="hbtns">
+      <button class="btn btn-outline" id="btn-admin" title="Administrar" style="padding:8px 12px;font-size:1.1rem">⚙️</button>
+    </div>
+  </div>
+</header>
+
+<div class="days-bar" id="days-bar">
+  <div class="days-inner">
+    <button class="day-tab active" data-day="1" id="tab1">Dia 1</button>
+    <button class="day-tab"        data-day="2" id="tab2">Dia 2</button>
+    <button class="day-tab"        data-day="3" id="tab3">Dia 3</button>
+    <button class="day-tab"        data-day="4" id="tab4">Dia 4</button>
+    <div class="type-filters">
+      <button class="pill" data-t="1">🏃 Esportiva</button>
+      <button class="pill" data-t="2">🎭 Cultural</button>
+      <button class="pill" data-t="3">🎉 Show</button>
+    </div>
+  </div>
+</div>
+
+<div id="pub">
+  <main>
+    <div class="sec-head">
+      <h2 id="sec-title">Activitats del Dia 1</h2>
+      <span class="badge" id="sec-badge">—</span>
+    </div>
+    <div class="grid" id="grid"></div>
+  </main>
+</div>
+
+<div id="admin">
+  <div class="adm-head">
+    <h2>⚙️ Gestió d'Activitats</h2>
+    <button class="btn btn-primary" id="btn-new">+ Nova Activitat</button>
+  </div>
+  <!-- Dates -->
+  <div class="fcard">
+    <h3>📅 Dates dels Dies</h3>
+    <div class="fgrid">
+      <div class="fg"><label>Data Dia 1</label><input type="date" id="d1"></div>
+      <div class="fg"><label>Data Dia 2</label><input type="date" id="d2"></div>
+      <div class="fg"><label>Data Dia 3</label><input type="date" id="d3"></div>
+      <div class="fg"><label>Data Dia 4</label><input type="date" id="d4"></div>
+    </div>
+    <div class="fact"><button class="btn btn-primary" id="btn-save-dates">💾 Desar Dates</button></div>
+  </div>
+  <!-- Taula -->
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Nom</th><th>Tipus</th><th>Dia</th><th>Hora</th><th>Equip</th><th>Accions</th></tr></thead>
+      <tbody id="tbody"><tr><td colspan="7" style="text-align:center;padding:32px;color:var(--gris)">Carregant...</td></tr></tbody>
+    </table>
+  </div>
+  <!-- Formulari -->
+  <div class="fcard" id="fcard" style="display:none">
+    <h3 id="form-ttl">Nova Activitat</h3>
+    <div class="fgrid">
+      <div class="fg full"><label>Nom <span class="req">*</span></label><input id="f-nom" type="text" maxlength="100" placeholder="Ex: Torneig de pàdel"></div>
+      <div class="fg">
+        <label>Tipus <span class="req">*</span></label>
+        <select id="f-tipus"><option value="">— Selecciona —</option><option value="1">🏃 Esportiva</option><option value="2">🎭 Cultural</option><option value="3">🎉 Show</option></select>
+      </div>
+      <div class="fg"><label>Equip d'animació <span class="req">*</span></label><input id="f-equip" type="text" maxlength="80" placeholder="Ex: Equip Aqua"></div>
+      <div class="fg">
+        <label>Dia <span class="req">*</span></label>
+        <select id="f-dia"><option value="">— Selecciona —</option><option value="1">Dia 1</option><option value="2">Dia 2</option><option value="3">Dia 3</option><option value="4">Dia 4</option></select>
+      </div>
+      <div class="fg"><label>Hora <span class="req">*</span></label><input id="f-hora" type="time"></div>
+      <div class="fg full"><label>Ubicació exacta <span class="req">*</span></label><input id="f-ubicacio" type="text" maxlength="150" placeholder="Ex: Piscina exterior, planta baixa"></div>
+      <div class="fg full"><label>Descripció <span class="req">*</span></label><textarea id="f-desc" rows="3" placeholder="Descriu l'activitat..."></textarea></div>
+      <div class="fg full"><label>Material necessari</label><textarea id="f-material" rows="2" placeholder="Ex: Banyador, roba esportiva..."></textarea></div>
+      <div class="fg full"><label>Observacions</label><textarea id="f-obs" rows="2" placeholder="Aforament, restriccions d'edat..."></textarea></div>
+      <div class="fg full"><label>URL de la imatge</label><input id="f-img" type="url" placeholder="https://exemple.com/imatge.jpg"></div>
+    </div>
+    <div class="fact">
+      <button class="btn btn-ghost" id="btn-cancel">Cancel·lar</button>
+      <button class="btn btn-primary" id="btn-save">💾 Desar al Sheets</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div id="m-img"></div>
+    <div class="modal-body">
+      <div class="modal-top">
+        <div><div id="m-badge"></div><div class="modal-ttl" id="m-ttl"></div></div>
+        <button class="btn-x" id="btn-x">✕</button>
+      </div>
+      <p class="modal-desc" id="m-desc"></p>
+      <div class="mgrid" id="m-grid"></div>
+      <div id="m-obs"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal contrasenya admin -->
+<div id="pass-overlay">
+  <div class="pass-box">
+    <h2>🔐 Accés Administrador</h2>
+    <p>Introdueix la contrasenya per accedir al panell d'administració.</p>
+    <input type="password" id="pass-input" placeholder="Contrasenya" autocomplete="off">
+    <div id="pass-error"></div>
+    <div class="pass-btns">
+      <button class="btn btn-ghost" id="pass-cancel">Cancel·lar</button>
+      <button class="btn btn-primary" id="pass-ok">Entrar</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════
+//  Activitats Hotel Cambrils — Frontend GAS
+//  Tota la persistència és via google.script.run → Code.gs
+//  Cap localStorage. Les dades sempre venen del Sheets.
+// ══════════════════════════════════════════════════════════════════
+
+var TC = {
+  1: { nom: 'Esportiva', emoji: '🏃' },
+  2: { nom: 'Cultural',  emoji: '🎭' },
+  3: { nom: 'Show',      emoji: '🎉' }
+};
+
+// ─── ESTAT ───────────────────────────────────────────────────────
+var S = {
+  acts:     [],          // array llegit del Sheets
+  dates:    { 1:'', 2:'', 3:'', 4:'' },
+  passAdmin: '',         // llegit del Sheets (Config fila 6)
+  icono:    '',          // URL icono llegida del Sheets (Config fila 7)
+  dia:      1,
+  filtres:  {},          // { '1': true, '2': false, '3': false }
+  editId:   null,
+  editDia:  null,
+  isAdmin:  false
+};
+
+// ─── GAS BRIDGE (igual que TutorGest) ────────────────────────────
+function gasRun(fn) {
+  var args = Array.prototype.slice.call(arguments, 1);
+  return new Promise(function(resolve, reject) {
+    var runner = google.script.run
+      .withSuccessHandler(resolve)
+      .withFailureHandler(function(e) { reject(new Error(e.message || String(e))); });
+    runner[fn].apply(runner, args);
+  });
+}
+
+// ─── LOADING ─────────────────────────────────────────────────────
+function showLoad(msg) {
+  document.getElementById('loading-txt').textContent = msg || 'Carregant...';
+  document.getElementById('loading').classList.remove('hidden');
+}
+function hideLoad() {
+  document.getElementById('loading').classList.add('hidden');
+}
+
+// ─── TOAST ───────────────────────────────────────────────────────
+var _tt;
+function toast(msg, err) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.style.background = err ? 'var(--vermell)' : 'var(--turquesa)';
+  el.classList.add('show');
+  clearTimeout(_tt);
+  _tt = setTimeout(function() { el.classList.remove('show'); }, 3200);
+}
+
+// ─── HELPERS ─────────────────────────────────────────────────────
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function ini(n) {
+  return String(n || '?').split(' ').map(function(w) { return w[0] || ''; }).join('').substring(0, 2).toUpperCase();
+}
+function fmtHora(h) { return h ? String(h).substring(0, 5) + 'h' : '—'; }
+function fmtData(n) {
+  var raw = S.dates[n];
+  if (!raw) return null;
+  var p = String(raw).split('-');
+  if (p.length < 3) return null;
+  var mm = ['gen','feb','mar','abr','mai','jun','jul','ago','set','oct','nov','des'];
+  return parseInt(p[2]) + ' ' + mm[parseInt(p[1]) - 1] + ' ' + p[0];
+}
+
+// ─── PESTANYES ───────────────────────────────────────────────────
+function renderTabs() {
+  [1, 2, 3, 4].forEach(function(n) {
+    var tab = document.getElementById('tab' + n);
+    if (!tab) return;
+    var dl = fmtData(n);
+    tab.innerHTML = dl
+      ? '<span class="tab-date">' + esc(dl) + '</span>Dia ' + n
+      : 'Dia ' + n;
+  });
+}
+
+// ─── TARGETES ────────────────────────────────────────────────────
+function renderCards() {
+  var actives = Object.keys(S.filtres).filter(function(k) { return S.filtres[k]; });
+  var list = S.acts.filter(function(a) {
+    return Number(a.dia) === S.dia &&
+      (actives.length === 0 || actives.indexOf(String(a.tipus)) !== -1);
+  }).sort(function(a, b) { return (a.hora || '').localeCompare(b.hora || ''); });
+
+  var dl = fmtData(S.dia);
+  document.getElementById('sec-title').textContent =
+    dl ? 'Activitats del Dia ' + S.dia + ' · ' + dl : 'Activitats del Dia ' + S.dia;
+  document.getElementById('sec-badge').textContent =
+    list.length + (list.length === 1 ? ' activitat' : ' activitats');
+
+  var g = document.getElementById('grid');
+  if (!list.length) {
+    g.innerHTML = '<div class="empty"><div class="ico">🌅</div><p>No hi ha activitats per a aquest dia.</p></div>';
+    return;
+  }
+
+  g.innerHTML = list.map(function(a) {
+    var t = TC[a.tipus] || {};
+    var imgHtml = a.img
+      ? '<img class="card-img" src="' + esc(a.img) + '" alt="' + esc(a.nom) + '" onerror="this.outerHTML=\'<div class=card-img-ph>' + (t.emoji || '🎯') + '</div>\'">'
+      : '<div class="card-img-ph">' + (t.emoji || '🎯') + '</div>';
+    return '<article class="card" data-t="' + a.tipus + '" onclick="openDetail(\'' + esc(String(a.id)) + '\',' + Number(a.dia) + ')">'
+      + imgHtml
+      + '<div class="stripe"></div>'
+      + '<div class="card-body">'
+        + '<div class="card-head">'
+          + '<h3 class="card-title">' + esc(a.nom) + '</h3>'
+          + '<span class="tbadge" data-t="' + a.tipus + '">' + esc(t.emoji) + ' ' + esc(t.nom) + '</span>'
+        + '</div>'
+        + '<p class="card-desc">' + esc(a.desc) + '</p>'
+        + '<div class="card-meta">'
+          + '<div class="meta-row"><span class="ico">🕐</span>' + fmtHora(a.hora) + '</div>'
+          + '<div class="meta-row"><span class="ico">📍</span>' + esc(a.ubicacio) + '</div>'
+          + (a.material ? '<div class="meta-row"><span class="ico">🎒</span><span style="font-size:.78rem;opacity:.85">' + esc(a.material) + '</span></div>' : '')
+        + '</div>'
+      + '</div>'
+      + '<div class="card-footer">'
+        + '<div class="avatar">' + ini(a.equip) + '</div>'
+        + '<span class="equip-name">' + esc(a.equip) + '</span>'
+      + '</div>'
+      + '</article>';
+  }).join('');
+}
+
+// ─── MODAL ───────────────────────────────────────────────────────
+function openDetail(id, dia) {
+  var a = S.acts.filter(function(x) { return String(x.id) === String(id) && Number(x.dia) === Number(dia); })[0];
+  if (!a) return;
+  var t  = TC[a.tipus] || {};
+  var dl = fmtData(a.dia);
+  var dLabel = dl ? 'Dia ' + a.dia + ' · ' + dl : 'Dia ' + a.dia;
+
+  document.getElementById('m-img').innerHTML = a.img
+    ? '<img class="modal-img" src="' + esc(a.img) + '" alt="' + esc(a.nom) + '">'
+    : '<div class="modal-img-ph">' + (t.emoji || '🎯') + '</div>';
+
+  document.getElementById('m-badge').innerHTML =
+    '<span class="tbadge" data-t="' + a.tipus + '">' + esc(t.emoji) + ' ' + esc(t.nom) + ' · ' + dLabel + '</span>';
+  document.getElementById('m-ttl').textContent  = a.nom;
+  document.getElementById('m-desc').textContent = a.desc;
+
+  document.getElementById('m-grid').innerHTML =
+    '<div class="mf"><div class="fl">🕐 Hora</div><div class="fv">' + fmtHora(a.hora) + '</div></div>'
+    + '<div class="mf"><div class="fl">👥 Equip d\'animació</div><div class="fv">' + esc(a.equip) + '</div></div>'
+    + '<div class="mf full"><div class="fl">📍 Ubicació</div><div class="fv">' + esc(a.ubicacio) + '</div></div>'
+    + (a.material ? '<div class="mf full"><div class="fl">🎒 Material necessari</div><div class="fv">' + esc(a.material) + '</div></div>' : '');
+
+  document.getElementById('m-obs').innerHTML = a.obs
+    ? '<div class="obs-box"><div class="obs-lbl">⚠️ Observacions</div>' + esc(a.obs) + '</div>' : '';
+
+  document.getElementById('overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+document.getElementById('btn-x').onclick = closeDetail;
+document.getElementById('overlay').addEventListener('click', function(e) { if (e.target === this) closeDetail(); });
+function closeDetail() { document.getElementById('overlay').classList.remove('open'); document.body.style.overflow = ''; }
+
+// ─── FILTRES ─────────────────────────────────────────────────────
+document.querySelectorAll('.day-tab').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.day-tab').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    S.dia = +btn.dataset.day;
+    renderCards();
+  });
+});
+document.querySelectorAll('.pill').forEach(function(p) {
+  p.addEventListener('click', function() {
+    var t = p.dataset.t;
+    S.filtres[t] = !S.filtres[t];
+    p.classList.toggle('on', !!S.filtres[t]);
+    renderCards();
+  });
+});
+
+// ─── TAULA ADMIN ─────────────────────────────────────────────────
+function renderTable() {
+  var tbody = document.getElementById('tbody');
+  if (!S.acts.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--gris)">No hi ha cap activitat. Crea\'n una!</td></tr>';
+    return;
+  }
+  var sorted = S.acts.slice().sort(function(a, b) {
+    return Number(a.dia) - Number(b.dia) || (a.hora || '').localeCompare(b.hora || '');
+  });
+  tbody.innerHTML = sorted.map(function(a, i) {
+    var t = TC[a.tipus] || {};
+    return '<tr>'
+      + '<td style="color:var(--gris);font-size:.8rem">' + (i + 1) + '</td>'
+      + '<td class="td-nom">' + esc(a.nom) + '</td>'
+      + '<td><span class="tbadge" data-t="' + a.tipus + '">' + esc(t.emoji) + ' ' + esc(t.nom) + '</span></td>'
+      + '<td>Dia ' + a.dia + '</td>'
+      + '<td>' + fmtHora(a.hora) + '</td>'
+      + '<td>' + esc(a.equip) + '</td>'
+      + '<td class="td-act">'
+        + '<button class="btn btn-ghost btn-sm" onclick="startEdit(\'' + esc(String(a.id)) + '\',' + Number(a.dia) + ')">✏️ Editar</button>'
+        + '<button class="btn btn-danger btn-sm" onclick="confirmDelete(\'' + esc(String(a.id)) + '\',' + Number(a.dia) + ',\'' + esc(a.nom) + '\')">🗑️</button>'
+      + '</td>'
+      + '</tr>';
+  }).join('');
+}
+
+// ─── FORMULARI ───────────────────────────────────────────────────
+function clearForm() {
+  ['nom','equip','ubicacio','desc','material','obs','img','hora'].forEach(function(f) {
+    document.getElementById('f-' + f).value = '';
+  });
+  document.getElementById('f-tipus').value = '';
+  document.getElementById('f-dia').value   = '';
+  S.editId  = null;
+  S.editDia = null;
+}
+
+function showForm()  { document.getElementById('fcard').style.display = 'block'; document.getElementById('fcard').scrollIntoView({ behavior: 'smooth' }); }
+function hideForm()  { document.getElementById('fcard').style.display = 'none'; clearForm(); }
+
+document.getElementById('btn-new').onclick    = function() { clearForm(); document.getElementById('form-ttl').textContent = 'Nova Activitat'; showForm(); };
+document.getElementById('btn-cancel').onclick = hideForm;
+
+function startEdit(id, dia) {
+  var a = S.acts.filter(function(x) { return String(x.id) === String(id) && Number(x.dia) === Number(dia); })[0];
+  if (!a) return;
+  S.editId  = a.id;
+  S.editDia = Number(a.dia);
+  document.getElementById('form-ttl').textContent  = 'Editar Activitat';
+  document.getElementById('f-nom').value      = a.nom;
+  document.getElementById('f-tipus').value    = a.tipus;
+  document.getElementById('f-equip').value    = a.equip;
+  document.getElementById('f-dia').value      = a.dia;
+  document.getElementById('f-hora').value     = a.hora || '';
+  document.getElementById('f-ubicacio').value = a.ubicacio;
+  document.getElementById('f-desc').value     = a.desc;
+  document.getElementById('f-material').value = a.material || '';
+  document.getElementById('f-obs').value      = a.obs || '';
+  document.getElementById('f-img').value      = a.img || '';
+  showForm();
+}
+
+document.getElementById('btn-save').onclick = function() {
+  var nom      = document.getElementById('f-nom').value.trim();
+  var tipus    = document.getElementById('f-tipus').value;
+  var equip    = document.getElementById('f-equip').value.trim();
+  var dia      = document.getElementById('f-dia').value;
+  var hora     = document.getElementById('f-hora').value;
+  var ubicacio = document.getElementById('f-ubicacio').value.trim();
+  var desc     = document.getElementById('f-desc').value.trim();
+  var material = document.getElementById('f-material').value.trim();
+  var obs      = document.getElementById('f-obs').value.trim();
+  var img      = document.getElementById('f-img').value.trim();
+
+  if (!nom || !tipus || !equip || !dia || !hora || !ubicacio || !desc) {
+    toast('⚠️ Omple tots els camps obligatoris.', true); return;
+  }
+
+  var btn = document.getElementById('btn-save');
+  btn.disabled = true;
+
+  if (S.editId !== null) {
+    // UPDATE
+    showLoad('Actualitzant al Sheets...');
+    gasRun('updateActivitat', S.editId, S.editDia, nom, Number(tipus), equip, Number(dia), hora, ubicacio, desc, material, obs, img)
+      .then(function(newId) {
+        // Eliminar de l'estat local i afegir la versió actualitzada
+        S.acts = S.acts.filter(function(a) {
+          return !(String(a.id) === String(S.editId) && Number(a.dia) === S.editDia);
+        });
+        S.acts.push({ id: newId, nom: nom, tipus: Number(tipus), equip: equip, dia: Number(dia), hora: hora, ubicacio: ubicacio, desc: desc, material: material, obs: obs, img: img });
+        hideForm(); renderTable(); renderCards();
+        toast('Activitat actualitzada al Sheets ✅');
+      })
+      .catch(function(e) { toast('Error: ' + e.message, true); })
+      .then(function() { btn.disabled = false; hideLoad(); });
+  } else {
+    // CREATE
+    showLoad('Desant al Sheets...');
+    gasRun('createActivitat', nom, Number(tipus), equip, Number(dia), hora, ubicacio, desc, material, obs, img)
+      .then(function(newId) {
+        S.acts.push({ id: newId, nom: nom, tipus: Number(tipus), equip: equip, dia: Number(dia), hora: hora, ubicacio: ubicacio, desc: desc, material: material, obs: obs, img: img });
+        hideForm(); renderTable(); renderCards();
+        toast('Activitat desada al Sheets ✅');
+      })
+      .catch(function(e) { toast('Error: ' + e.message, true); })
+      .then(function() { btn.disabled = false; hideLoad(); });
+  }
+};
+
+// ─── ELIMINAR ────────────────────────────────────────────────────
+function confirmDelete(id, dia, nom) {
+  if (!confirm('Segur que vols eliminar "' + nom + '"?')) return;
+  showLoad('Eliminant del Sheets...');
+  gasRun('deleteActivitat', String(id), Number(dia))
+    .then(function() {
+      S.acts = S.acts.filter(function(a) {
+        return !(String(a.id) === String(id) && Number(a.dia) === Number(dia));
+      });
+      renderTable(); renderCards();
+      toast('Activitat eliminada del Sheets.');
+    })
+    .catch(function(e) { toast('Error: ' + e.message, true); })
+    .then(hideLoad);
+}
+
+// ─── DATES ───────────────────────────────────────────────────────
+document.getElementById('btn-save-dates').onclick = function() {
+  var d1 = document.getElementById('d1').value || '';
+  var d2 = document.getElementById('d2').value || '';
+  var d3 = document.getElementById('d3').value || '';
+  var d4 = document.getElementById('d4').value || '';
+  showLoad('Desant dates al Sheets...');
+  gasRun('saveConfig', d1, d2, d3, d4)
+    .then(function() {
+      S.dates = { 1: d1, 2: d2, 3: d3, 4: d4 };
+      renderTabs(); renderCards();
+      toast('Dates desades al Sheets ✅');
+    })
+    .catch(function(e) { toast('Error: ' + e.message, true); })
+    .then(hideLoad);
+};
+
+// ─── TOGGLE ADMIN ────────────────────────────────────────────────
+function openAdmin() {
+  S.isAdmin = true;
+  document.getElementById('pub').classList.add('hidden');
+  document.getElementById('days-bar').style.display = 'none';
+  document.getElementById('admin').classList.add('open');
+  document.getElementById('btn-admin').innerHTML = '👁️';
+  document.getElementById('btn-admin').title = 'Vista Pública';
+  renderTable(); hideForm();
+  [1, 2, 3, 4].forEach(function(n) { document.getElementById('d' + n).value = S.dates[n] || ''; });
+}
+
+function closeAdmin() {
+  S.isAdmin = false;
+  document.getElementById('pub').classList.remove('hidden');
+  document.getElementById('days-bar').style.display = '';
+  document.getElementById('admin').classList.remove('open');
+  document.getElementById('btn-admin').innerHTML = '⚙️';
+  document.getElementById('btn-admin').title = 'Administrar';
+}
+
+// Botó admin: si ja és admin → tancar; si no → demanar contrasenya
+document.getElementById('btn-admin').onclick = function() {
+  if (S.isAdmin) { closeAdmin(); return; }
+  // Obrir modal contrasenya
+  document.getElementById('pass-input').value = '';
+  document.getElementById('pass-error').textContent = '';
+  document.getElementById('pass-overlay').classList.add('open');
+  setTimeout(function() { document.getElementById('pass-input').focus(); }, 100);
+};
+
+// Modal contrasenya
+document.getElementById('pass-cancel').onclick = function() {
+  document.getElementById('pass-overlay').classList.remove('open');
+};
+document.getElementById('pass-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') document.getElementById('pass-ok').click();
+});
+document.getElementById('pass-ok').onclick = function() {
+  var entered = document.getElementById('pass-input').value;
+  if (entered === S.passAdmin) {
+    document.getElementById('pass-overlay').classList.remove('open');
+    openAdmin();
+  } else {
+    document.getElementById('pass-error').textContent = '❌ Contrasenya incorrecta';
+    document.getElementById('pass-input').value = '';
+    document.getElementById('pass-input').focus();
+  }
+};
+
+// ─── RECARREGAR DES DEL SHEETS ───────────────────────────────────
+
+// ─── CÀRREGA INICIAL ─────────────────────────────────────────────
+function loadAll() {
+  showLoad('Llegint Google Sheets...');
+
+  Promise.all([
+    gasRun('getConfig'),
+    gasRun('getAllActivitats')
+  ]).then(function(results) {
+    var cfg  = results[0];  // { data_dia_1:'...', ... }
+    var acts = results[1];  // array d'activitats
+
+    S.dates = {
+      1: cfg['data_dia_1'] || '',
+      2: cfg['data_dia_2'] || '',
+      3: cfg['data_dia_3'] || '',
+      4: cfg['data_dia_4'] || ''
+    };
+    S.passAdmin = cfg['pass_admin'] || '';
+    S.icono     = cfg['icono']      || '';
+    // Aplicar icono: substituir la ola 🌊 per la imatge del Sheets
+    if (S.icono) {
+      var logoIcon = document.querySelector('.logo-icon');
+      logoIcon.innerHTML = '<img src="' + S.icono + '" style="width:32px;height:32px;object-fit:contain;border-radius:6px" onerror="this.parentElement.textContent='🌊'">';
+    }
+
+    S.acts = (acts || []).map(function(a) {
+      return {
+        id:       String(a.id),
+        nom:      String(a.nom      || ''),
+        tipus:    Number(a.tipus)   || 1,
+        equip:    String(a.equip    || ''),
+        hora:     String(a.hora     || ''),
+        ubicacio: String(a.ubicacio || ''),
+        desc:     String(a.desc     || ''),
+        material: String(a.material || ''),
+        obs:      String(a.obs      || ''),
+        img:      String(a.img      || ''),
+        dia:      Number(a.dia)
+      };
+    });
+
+    renderTabs();
+    renderCards();
+    toast('Dades llegides del Sheets ✅');
+  })
+  .catch(function(e) {
+    document.getElementById('grid').innerHTML =
+      '<div class="empty"><div class="ico">⚠️</div><p>Error carregant: ' + esc(e.message) + '</p></div>';
+    toast('Error de connexió: ' + e.message, true);
+  })
+  .then(hideLoad);
+}
+
+loadAll();
+</script>
+</body>
+</html>
