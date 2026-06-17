@@ -89,7 +89,7 @@ function getTab(nom) {
 
 // ── ENTRADA WEB ─────────────────────────────────────────────────
 function doGet() {
-  return HtmlService.createHtmlOutputFromFile('Index')
+  return HtmlService.createHtmlOutputFromFile('index')
     .setTitle('Activitats · Hotel Cambrils')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
