@@ -1,5 +1,5 @@
 {
   "scriptId": "1jNO9ucNY3UGwSAh-WxCAeVWPMlSxmrbfNRbAJiSmRqu5NMofx252Zsjg",
   "rootDir": ".",
-  "filePushOrder": ["appsscript.json", "Config.gs", "Code.gs", "Index.html"]
+  "filePushOrder": ["appsscript.json", "Config.gs", "Code.gs", "index.html"]
 }
